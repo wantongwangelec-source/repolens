@@ -1,0 +1,445 @@
+@import "tailwindcss";
+@import "@xyflow/react/dist/style.css";
+
+/*
+ * Design a token.
+ *
+ * The dots and node color bars only encode programming languages, see docs/INTERACTION.md 'Group by the repository's own language'.
+ * The neutral colors are deliberately pressed down to be very flat, allowing the few accent colors to truly stand out.
+ */
+@theme {
+  --color-canvas: #0b0d10;
+  --color-surface: #14171c;
+  --color-surface-2: #1b1f26;
+  --color-surface-3: #232831;
+  --color-surface-raised: #272d37;
+  --color-line: #2b313b;
+  --color-line-strong: #3a4250;
+  --color-ink: #e6e9ef;
+  --color-ink-muted: #9aa4b4;
+  --color-ink-faint: #6b7583;
+  --color-accent: #5eb0ff;
+  --color-accent-dim: #1b3a5c;
+  --color-warn: #e0a458;
+  --color-note: #e3c46f;
+  --color-danger: #ef7279;
+  --color-success: #34d399;
+  --color-graph-grid: #1e232b;
+  --color-overlay: rgb(0 0 0 / 50%);
+
+  --lang-typescript: #4a9eff;
+  --lang-tsx: #4a9eff;
+  --lang-javascript: #e5c06b;
+  --lang-jsx: #e5c06b;
+  --lang-python: #5ecb9e;
+  --lang-go: #56c7d6;
+  --lang-rust: #e08758;
+  --lang-vue: #42b883;
+  --lang-svelte: #ff5a3c;
+  --lang-astro: #b48cff;
+  --lang-java: #ed8b32;
+  --lang-cpp: #659ad2;
+  --lang-csharp: #9b72cf;
+  --lang-php: #8993be;
+  --lang-ruby: #d35f5f;
+  --lang-shell: #89c47c;
+  --lang-other: #8b95a5;
+}
+
+:root {
+  color-scheme: dark;
+  --font-scale: 1;
+  --node-hover-shadow: 0 8px 24px rgb(0 0 0 / 45%);
+
+  /*
+   * Syntax highlighting only uses a few colors, with saturation lower than that of the interface accent colors, to prevent the source code area from
+   * Steal the visual focus in the drawer. Variable names follow Shiki's css-variables theme conventions.
+   */
+  --code-foreground: #c5cdd8;
+  --code-token-keyword: #c3a6f5;
+  --code-token-function: #7fbff5;
+  --code-token-string: #a5d49b;
+  --code-token-string-expression: #a5d49b;
+  --code-token-constant: #eab27e;
+  --code-token-parameter: #e3c98f;
+  --code-token-comment: #6b7583;
+  --code-token-punctuation: #8a94a3;
+  --code-token-link: #5eb0ff;
+  --code-token-inserted: #34d399;
+  --code-token-deleted: #ef7279;
+  --code-token-changed: #e0a458;
+}
+
+:root[data-font-size="small"] {
+  --font-scale: 1;
+}
+
+:root[data-font-size="medium"] {
+  --font-scale: 1.15;
+}
+
+:root[data-font-size="large"] {
+  --font-scale: 1.3;
+}
+
+/*
+ * The light mode only replaces semantic tokens, while components still express 'canvas, surface, border, body text'.
+ * No need to maintain a second set of classNames. Emphasis colors and language colors are darkened separately to ensure readability on a white background.
+ */
+:root[data-theme="light"] {
+  color-scheme: light;
+
+  --color-canvas: #f3f5f8;
+  --color-surface: #ffffff;
+  --color-surface-2: #f8fafc;
+  --color-surface-3: #edf1f5;
+  --color-surface-raised: #e7ecf2;
+  --color-line: #d8dee7;
+  --color-line-strong: #b8c2cf;
+  --color-ink: #17202b;
+  --color-ink-muted: #526174;
+  --color-ink-faint: #778395;
+  --color-accent: #1672b8;
+  --color-accent-dim: #dceeff;
+  --color-warn: #9b5c08;
+  --color-note: #86640a;
+  --color-danger: #c73a43;
+  --color-success: #167553;
+  --color-graph-grid: #d3dae4;
+  --color-overlay: rgb(31 41 55 / 30%);
+
+  --lang-typescript: #176caf;
+  --lang-tsx: #176caf;
+  --lang-javascript: #8b6500;
+  --lang-jsx: #8b6500;
+  --lang-python: #247d5f;
+  --lang-go: #187988;
+  --lang-rust: #ae5028;
+  --lang-vue: #198754;
+  --lang-svelte: #c43d24;
+  --lang-astro: #7048ad;
+  --lang-java: #a65310;
+  --lang-cpp: #2f6f9f;
+  --lang-csharp: #7040a1;
+  --lang-php: #555b91;
+  --lang-ruby: #a02d36;
+  --lang-shell: #3f7b36;
+  --lang-other: #667386;
+  --node-hover-shadow: 0 8px 24px rgb(31 41 55 / 16%);
+
+  --code-foreground: #1f2937;
+  --code-token-keyword: #7042c9;
+  --code-token-function: #1462a8;
+  --code-token-string: #2d7a36;
+  --code-token-string-expression: #2d7a36;
+  --code-token-constant: #a8540b;
+  --code-token-parameter: #8a6200;
+  --code-token-comment: #7b8594;
+  --code-token-punctuation: #5b6573;
+  --code-token-link: #1672b8;
+  --code-token-inserted: #167553;
+  --code-token-deleted: #c73a43;
+  --code-token-changed: #9b5c08;
+}
+
+html,
+body,
+#root {
+  height: 100%;
+  margin: 0;
+}
+
+/*
+ * If the top bar is any narrower, it won't be able to hold the controls on both sides. When the window is even narrower than this, the entire page scrolls horizontally.
+ * Instead of letting the buttons crowd together or overlap each other, the minimum width of the desktop window is the same as this.
+ */
+#root {
+  min-width: 1024px;
+}
+
+body {
+  background: var(--color-canvas);
+  color: var(--color-ink);
+  font-family:
+    ui-sans-serif, -apple-system, "SF Pro Text", "PingFang SC", "Microsoft YaHei", system-ui,
+    sans-serif;
+  -webkit-font-smoothing: antialiased;
+  overflow-x: auto;
+  overflow-y: hidden;
+}
+
+/*
+ * Tailwind v4's preflight will make buttons inherit the default cursor. All semantic buttons that are not disabled
+ * All are clickable controls and should uniformly display the hand cursor; the disabled state should continue to use each component's not-allowed or wait.
+ * Or default style expressions cannot be overridden by this rule.
+ */
+button:enabled {
+  cursor: pointer;
+}
+
+code,
+pre,
+.mono {
+  font-family: "SF Mono", ui-monospace, "JetBrains Mono", Menlo, Consolas, monospace;
+}
+
+/*
+ * The current interface uses pixel values to finely control information density. Applying a uniform font scale here will not be like
+ * Like the browser zoom, it enlarges both the canvas and panel sizes together, and can also cover all the main text and labels.
+ * When adding a new font size tier, the corresponding text-[Npx] should also be added here.
+ */
+body [class~="text-[8.5px]"] { font-size: calc(8.5px * var(--font-scale)); }
+body [class~="text-[9px]"] { font-size: calc(9px * var(--font-scale)); }
+body [class~="text-[9.5px]"] { font-size: calc(9.5px * var(--font-scale)); }
+body [class~="text-[10px]"] { font-size: calc(10px * var(--font-scale)); }
+body [class~="text-[10.5px]"] { font-size: calc(10.5px * var(--font-scale)); }
+body [class~="text-[11px]"] { font-size: calc(11px * var(--font-scale)); }
+body [class~="text-[11.5px]"] { font-size: calc(11.5px * var(--font-scale)); }
+body [class~="text-[12px]"] { font-size: calc(12px * var(--font-scale)); }
+body [class~="text-[12.5px]"] { font-size: calc(12.5px * var(--font-scale)); }
+body [class~="text-[13px]"] { font-size: calc(13px * var(--font-scale)); }
+body [class~="text-[14px]"] { font-size: calc(14px * var(--font-scale)); }
+body [class~="text-[15px]"] { font-size: calc(15px * var(--font-scale)); }
+body [class~="text-[17px]"] { font-size: calc(17px * var(--font-scale)); }
+body .text-sm { font-size: calc(14px * var(--font-scale)); }
+
+/*
+ * Put the ellipsis at the beginning and keep the end of the string. Used for file paths: in a screen of results, the prefix is mostly repeated.
+ * The distinction lies in the final segment. direction: rtl only changes the direction of the overflow clipping; the path itself is entirely LTR.
+ * Characters, so the display order is not affected—but the beginning and end of the string cannot be punctuation, otherwise it will be affected by bidi
+ * Move to the other end, and the caller needs to separate delimiters like `·` for individual rendering.
+ */
+.truncate-start {
+  direction: rtl;
+  text-align: left;
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+}
+
+/*
+ * The desktop macOS hides the system title bar, with the red, yellow, and green buttons stacked on the left side of the top bar: make room for them,
+ * You can drag the window in the blank area of the top bar. Controls and drop-down panels must be excluded from the draggable area; otherwise, they cannot be clicked.
+ * When in full screen, the traffic light hides along with it and no longer reserves space.
+ */
+:root[data-desktop="darwin"]:not([data-fullscreen]) .app-topbar {
+  padding-left: 84px;
+}
+:root[data-desktop="darwin"] .app-topbar {
+  -webkit-app-region: drag;
+}
+:root[data-desktop="darwin"] .app-topbar :is(button, a, input, kbd, [role="group"], .absolute) {
+  -webkit-app-region: no-drag;
+}
+
+/* When the main text in the top bar is too long to fit, the secondary text will be hidden step by step. To find out when it is considered too long, see TopBar's useCompactTopBar. */
+.app-topbar[data-compact] [data-topbar-optional="1"],
+.app-topbar[data-compact="2"] [data-topbar-optional="2"] {
+  display: none;
+}
+.app-topbar[data-compact] :is([data-breadcrumb], [data-breadcrumb] > *) {
+  flex-shrink: 1;
+  min-width: 0;
+}
+
+/* You need to cover the built-in background and borders of React Flow, otherwise they clash with the dark theme. */
+.react-flow {
+  --xy-background-color: var(--color-canvas);
+  --xy-edge-stroke-default: var(--color-line-strong);
+  --xy-node-border-radius: 10px;
+}
+
+/* Before the main shot is in position, the node is still in the default viewport; after it is in position, it fades in simultaneously with the camera settling. */
+.react-flow__viewport {
+  transition: opacity 280ms ease-out;
+}
+
+.graph-unframed .react-flow__viewport {
+  opacity: 0;
+}
+
+.react-flow__node {
+  cursor: pointer;
+  /* The node itself controls the transition, and the default transform transition in React Flow will conflict with layout animations. */
+  transition:
+    opacity 140ms ease,
+    filter 140ms ease;
+}
+
+.react-flow__handle {
+  opacity: 0;
+  pointer-events: none;
+}
+
+/* You can click on the edge: see what this dependency is made of */
+.react-flow__edge {
+  cursor: pointer;
+}
+
+.react-flow__attribution {
+  display: none;
+}
+
+/* The Controls default to a light theme, and the whole block will explode into a white square on a dark canvas. */
+.react-flow__controls {
+  box-shadow: none;
+  border: 1px solid var(--color-line);
+  border-radius: 8px;
+  overflow: hidden;
+}
+
+.react-flow__controls-button {
+  background: var(--color-surface);
+  border-bottom: 1px solid var(--color-line);
+  fill: var(--color-ink-muted);
+  width: 26px;
+  height: 26px;
+}
+
+.react-flow__controls-button:hover {
+  background: var(--color-surface-3);
+  fill: var(--color-ink);
+}
+
+.react-flow__controls-button:last-child {
+  border-bottom: none;
+}
+
+/* The scrollbar should be as invisible as possible within the overlay, otherwise a bright line will appear at the edge of the drawer. */
+.thin-scroll {
+  scrollbar-width: thin;
+  scrollbar-color: var(--color-line-strong) transparent;
+}
+.thin-scroll::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+.thin-scroll::-webkit-scrollbar-thumb {
+  background: var(--color-line-strong);
+  border-radius: 4px;
+}
+.thin-scroll::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+/* A single-row horizontal scrollbar (such as on detail page tabs): the scrollbar will push this row out of alignment, and the tabs truncated at the end already indicate that they can still be scrolled. */
+.no-scrollbar {
+  scrollbar-width: none;
+}
+.no-scrollbar::-webkit-scrollbar {
+  display: none;
+}
+
+/* AI response. The sidebar is very narrow, and the spacing between blocks is tighter than the document layout by one level. */
+.chat-markdown > :first-child {
+  margin-top: 0;
+}
+.chat-markdown > :last-child {
+  margin-bottom: 0;
+}
+.chat-markdown p,
+.chat-markdown ul,
+.chat-markdown ol,
+.chat-markdown blockquote,
+.chat-markdown table {
+  margin: 0.45em 0;
+}
+.chat-markdown ul {
+  list-style: disc;
+  padding-left: 1.2em;
+}
+.chat-markdown ol {
+  list-style: decimal;
+  padding-left: 1.4em;
+}
+.chat-markdown li + li {
+  margin-top: 0.15em;
+}
+.chat-markdown li > ul,
+.chat-markdown li > ol {
+  margin: 0.15em 0;
+}
+.chat-markdown h1,
+.chat-markdown h2,
+.chat-markdown h3,
+.chat-markdown h4 {
+  margin: 0.8em 0 0.3em;
+  font-size: 12.5px;
+  font-weight: 600;
+}
+.chat-markdown strong {
+  font-weight: 600;
+}
+.chat-markdown blockquote {
+  border-left: 2px solid var(--color-line-strong);
+  padding-left: 0.7em;
+  color: var(--color-ink-muted);
+}
+.chat-markdown table {
+  display: block;
+  overflow-x: auto;
+  border-collapse: collapse;
+  font-size: 11px;
+}
+.chat-markdown th,
+.chat-markdown td {
+  border: 1px solid var(--color-line);
+  padding: 0.2em 0.5em;
+  text-align: left;
+}
+.chat-markdown hr {
+  margin: 0.8em 0;
+  border-color: var(--color-line);
+}
+/* Warehouse documents are much longer than AI responses, and the headings need to be organized hierarchically. */
+.doc-markdown h1 {
+  margin-top: 1.1em;
+  font-size: 15px;
+}
+.doc-markdown h2 {
+  margin-top: 1.1em;
+  padding-bottom: 0.25em;
+  border-bottom: 1px solid var(--color-line);
+  font-size: 13.5px;
+}
+
+@keyframes rl-fade-in {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes rl-slide-right {
+  from {
+    transform: translateX(12px);
+    opacity: 0;
+  }
+  to {
+    transform: translateX(0);
+    opacity: 1;
+  }
+}
+
+@keyframes rl-slide-left {
+  from {
+    transform: translateX(-12px);
+    opacity: 0;
+  }
+  to {
+    transform: translateX(0);
+    opacity: 1;
+  }
+}
+
+.anim-fade {
+  animation: rl-fade-in 120ms ease-out;
+}
+.anim-slide-right {
+  animation: rl-slide-right 160ms cubic-bezier(0.22, 0.61, 0.36, 1);
+}
+.anim-slide-left {
+  animation: rl-slide-left 160ms cubic-bezier(0.22, 0.61, 0.36, 1);
+}

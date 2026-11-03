@@ -1,0 +1,31 @@
+{
+  "name": "repolens-monorepo",
+  "version": "0.1.15",
+  "private": true,
+  "type": "module",
+  "packageManager": "pnpm@9.13.2",
+  "engines": {
+    "node": ">=20.11"
+  },
+  "pnpm": {
+    "neverBuiltDependencies": [
+      "better-sqlite3"
+    ]
+  },
+  "scripts": {
+    "build": "pnpm -r build",
+    "build:node": "tsc -b packages/core packages/server packages/cli",
+    "clean": "rm -rf packages/*/dist packages/*/tsconfig.tsbuildinfo packages/web/dist",
+    "typecheck": "tsc -b packages/core packages/server packages/cli && pnpm --filter @repolens/web typecheck && pnpm --filter @repolens/desktop typecheck",
+    "test": "pnpm -r test",
+    "lens": "node --enable-source-maps packages/cli/dist/bin.js",
+    "dev:web": "pnpm --filter @repolens/web dev",
+    "desktop": "pnpm build && pnpm --filter @repolens/desktop start",
+    "dist:desktop": "pnpm build && pnpm --filter @repolens/desktop dist"
+  },
+  "devDependencies": {
+    "@types/node": "^22.10.2",
+    "typescript": "^5.7.2",
+    "vitest": "^2.1.8"
+  }
+}

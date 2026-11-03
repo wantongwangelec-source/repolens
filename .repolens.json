@@ -1,0 +1,40 @@
+{
+  "rules": [
+    {
+      "name": "core 不依赖上层",
+      "from": "packages/core/**",
+      "disallow": ["packages/server/**", "packages/cli/**", "packages/web/**", "packages/desktop/**", "react", "hono", "electron"],
+      "reason": "core 是被所有入口复用的底座，反向依赖会让它没法单独测试和发布"
+    },
+    {
+      "name": "前端只经 HTTP 访问后端",
+      "from": "packages/web/**",
+      "disallow": ["packages/server/**", "packages/core/**", "packages/cli/**", "node:*", "better-sqlite3"],
+      "allow": ["packages/core/src/types.ts"],
+      "reason": "web 跑在浏览器里，只能通过 /api 调后端；共享的只有类型"
+    },
+    {
+      "name": "server 不依赖入口层",
+      "from": "packages/server/**",
+      "disallow": ["packages/cli/**", "packages/desktop/**", "packages/web/**"],
+      "reason": "server 被命令行和桌面端复用，反过来依赖它们就成环了"
+    }
+  ],
+  "layers": [
+    {
+      "name": "入口",
+      "description": "命令行、桌面端和浏览器界面：面向人的外壳",
+      "members": ["pkg:@repolens/cli", "pkg:@repolens/desktop", "pkg:@repolens/web"]
+    },
+    {
+      "name": "服务",
+      "description": "本地 HTTP 服务：把索引查询和受控的写操作交给界面",
+      "members": ["pkg:@repolens/server"]
+    },
+    {
+      "name": "核心",
+      "description": "扫描、解析、索引、体检和查询，不依赖任何上层",
+      "members": ["pkg:@repolens/core"]
+    }
+  ]
+}

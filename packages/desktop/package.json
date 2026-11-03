@@ -1,0 +1,34 @@
+{
+  "name": "@repolens/desktop",
+  "productName": "RepoLens",
+  "version": "0.1.15",
+  "private": true,
+  "type": "module",
+  "description": "RepoLens 桌面客户端",
+  "author": {
+    "name": "Tong",
+    "email": "xtongs@gmail.com"
+  },
+  "homepage": "https://github.com/xtongs/repolens",
+  "scripts": {
+    "build": "node scripts/build.mjs",
+    "typecheck": "tsc --noEmit -p tsconfig.json",
+    "start": "node scripts/build.mjs && electron app",
+    "pack": "node scripts/dist.mjs --dir",
+    "dist": "node scripts/dist.mjs"
+  },
+  "dependencies": {
+    "@vscode/tree-sitter-wasm": "^0.3.1",
+    "better-sqlite3": "^13.0.3",
+    "web-tree-sitter": "^0.27.0"
+  },
+  "devDependencies": {
+    "@repolens/core": "workspace:*",
+    "@repolens/server": "workspace:*",
+    "@repolens/web": "workspace:*",
+    "electron": "^44.4.5",
+    "electron-builder": "^26.15.3",
+    "electron-updater": "^6.8.9",
+    "esbuild": "^0.28.2"
+  }
+}

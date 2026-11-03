@@ -1,0 +1,40 @@
+{
+  "name": "@repolens/core",
+  "version": "0.1.15",
+  "private": true,
+  "type": "module",
+  "main": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.js"
+    },
+    "./types": {
+      "types": "./dist/types.d.ts",
+      "import": "./dist/types.js"
+    },
+    "./config": {
+      "types": "./dist/config.d.ts",
+      "import": "./dist/config.js"
+    }
+  },
+  "files": ["dist"],
+  "scripts": {
+    "build": "tsc -b",
+    "test": "vitest run"
+  },
+  "dependencies": {
+    "@vscode/tree-sitter-wasm": "^0.3.1",
+    "better-sqlite3": "^13.0.3",
+    "ignore": "^7.0.9",
+    "picomatch": "^4.0.7",
+    "smol-toml": "^1.8.0",
+    "web-tree-sitter": "^0.27.0",
+    "yaml": "^2.9.1"
+  },
+  "devDependencies": {
+    "@types/better-sqlite3": "^7.6.12",
+    "@types/picomatch": "^4.0.0"
+  }
+}

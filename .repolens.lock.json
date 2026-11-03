@@ -1,0 +1,37 @@
+{
+  "version": 1,
+  "level": "package",
+  "modules": [],
+  "dependencies": [
+    {
+      "from": "@repolens/cli",
+      "to": "@repolens/core",
+      "type": "imports"
+    },
+    {
+      "from": "@repolens/cli",
+      "to": "@repolens/server",
+      "type": "imports"
+    },
+    {
+      "from": "@repolens/desktop",
+      "to": "@repolens/core",
+      "type": "imports"
+    },
+    {
+      "from": "@repolens/desktop",
+      "to": "@repolens/server",
+      "type": "imports"
+    },
+    {
+      "from": "@repolens/server",
+      "to": "@repolens/core",
+      "type": "imports"
+    },
+    {
+      "from": "@repolens/web",
+      "to": "@repolens/server",
+      "type": "http"
+    }
+  ]
+}
