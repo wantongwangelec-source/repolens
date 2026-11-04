@@ -137,7 +137,7 @@ export function parseLlmSettingsInput(value: unknown): LlmSettingsInput {
 export function writeLlmSettings(input: LlmSettingsInput): void {
   const baseUrl = input.baseUrl.trim().replace(/\/+$/, "");
   const service = /^https?:\/\//i.test(baseUrl) ? serviceOf(baseUrl) : null;
-  if (service === null) throw new Error(tr("服务地址要以 http:// or starting with https://
+  if (service === null) throw new Error(tr("服务地址要以 http:// 或 https:// 开头", "Service URL must start with http:// or https://"));
   const model = input.model.trim();
   if (model === "") throw new Error(tr("请填写模型名称", "Enter a model name"));
   const apiKey = typeof input.apiKey === "string" ? input.apiKey.trim() : input.apiKey;
