@@ -1,0 +1,97 @@
+# 桌面端三平台打包。
+#
+# 推送 v* 标签：先建同名 Release 草稿并上传三端安装包，三个平台都成功后再自动公开发布。
+# 手动运行（Actions 页面 Run workflow）：只打包，安装包作为本次运行的 artifact 下载，不发布。
+#
+# macOS 签名和公证目前留空，缺省时自动用 ad-hoc 签名。配置方法见 docs/desktop.md。
+name: 桌面端发布
+
+on:
+  push:
+    tags: ["v*"]
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  # 先建好草稿，三个平台的任务同时上传时才不会各自建出一个
+  draft:
+    if: startsWith(github.ref, 'refs/tags/')
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v5
+      - name: 检查版本号
+        run: |
+          version=$(node -p "require('./packages/desktop/package.json').version")
+          if [ "v$version" != "$GITHUB_REF_NAME" ]; then
+            echo "::error::标签 $GITHUB_REF_NAME 与 packages/desktop/package.json 的版本 $version 不一致"
+            exit 1
+          fi
+      - name: 创建 Release 草稿
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          gh release view "$GITHUB_REF_NAME" --repo "$GITHUB_REPOSITORY" >/dev/null 2>&1 ||
+            gh release create "$GITHUB_REF_NAME" --repo "$GITHUB_REPOSITORY" --draft \
+              --title "RepoLens $GITHUB_REF_NAME" --generate-notes
+
+  build:
+    needs: draft
+    # 手动运行时 draft 被跳过，这里仍要执行
+    if: ${{ !failure() && !cancelled() }}
+    strategy:
+      fail-fast: false
+      matrix:
+        # macOS 在 Apple 芯片机器上同时打 arm64 和 x64；Linux 同时打 x64 和 arm64
+        os: [macos-latest, windows-latest, ubuntu-latest]
+    runs-on: ${{ matrix.os }}
+    steps:
+      - uses: actions/checkout@v5
+      - uses: pnpm/action-setup@v5
+      - uses: actions/setup-node@v5
+        with:
+          node-version: 22
+          cache: pnpm
+
+      - run: pnpm install --frozen-lockfile
+      - run: pnpm build
+      - run: pnpm test
+
+      - name: 打包
+        working-directory: packages/desktop
+        shell: bash
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          # 以下 secret 未配置时为空，scripts/dist.mjs 会忽略空值并退回 ad-hoc 签名。
+          # 只给 macOS 任务：electron-builder 在 Windows 上找不到 WIN_CSC_LINK 时会拿 CSC_LINK 去签名。
+          CSC_LINK: ${{ runner.os == 'macOS' && secrets.MAC_CERTIFICATE_P12_BASE64 || '' }}
+          CSC_KEY_PASSWORD: ${{ runner.os == 'macOS' && secrets.MAC_CERTIFICATE_PASSWORD || '' }}
+          APPLE_ID: ${{ runner.os == 'macOS' && secrets.APPLE_ID || '' }}
+          APPLE_APP_SPECIFIC_PASSWORD: ${{ runner.os == 'macOS' && secrets.APPLE_APP_SPECIFIC_PASSWORD || '' }}
+          APPLE_TEAM_ID: ${{ runner.os == 'macOS' && secrets.APPLE_TEAM_ID || '' }}
+        run: node scripts/dist.mjs --publish ${{ startsWith(github.ref, 'refs/tags/') && 'always' || 'never' }}
+
+      - name: 保存安装包
+        if: ${{ !startsWith(github.ref, 'refs/tags/') }}
+        uses: actions/upload-artifact@v6
+        with:
+          name: RepoLens-${{ runner.os }}
+          path: |
+            packages/desktop/release/*.dmg
+            packages/desktop/release/*.zip
+            packages/desktop/release/*.exe
+            packages/desktop/release/*.AppImage
+            packages/desktop/release/*.deb
+          if-no-files-found: error
+
+  # 等矩阵全部成功，避免只传了一部分就公开成残缺 Release
+  publish:
+    needs: build
+    if: ${{ startsWith(github.ref, 'refs/tags/') && success() }}
+    runs-on: ubuntu-latest
+    steps:
+      - name: 公开发布
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: gh release edit "$GITHUB_REF_NAME" --repo "$GITHUB_REPOSITORY" --draft=false
