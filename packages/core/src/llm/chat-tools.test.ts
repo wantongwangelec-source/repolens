@@ -187,7 +187,7 @@ describe("runChatTool", () => {
 
   it("网页抓取关闭、工具不存在或参数不是 JSON 时如实回给模型", async () => {
     const ctx = { ...setup(), webFetch: false };
-    expect((await call(ctx, "fetch_url", { url: "https://example.com" })).content).toBe("Error: web scraping has been turned off in settings");
+    expect((await call(ctx, "fetch_url", { url: "https://example.com" })).content).toBe("Error: 网页抓取已在设置里关闭");
     const unknown = await call(ctx, "rm_rf", {});
     expect(unknown.step).toBeNull();
     expect(unknown.content).toMatch(/^Error: unknown tool "rm_rf"/);

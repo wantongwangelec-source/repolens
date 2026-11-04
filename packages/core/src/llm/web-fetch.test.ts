@@ -34,17 +34,17 @@ describe("isPrivateAddress", () => {
 
 describe("fetchWebPage", () => {
   it("拒绝非 http 协议、带账号密码的网址和本机地址", async () => {
-    await expect(fetchWebPage("file:///etc/passwd")).rejects.toThrow("Can only fetch http or https URLs");
-    await expect(fetchWebPage("https://user:pass@example.com/")).rejects.toThrow("URLs cannot include username or password");
+    await expect(fetchWebPage("file:///etc/passwd")).rejects.toThrow("只能抓取 http 或 https 网址");
+    await expect(fetchWebPage("https://user:pass@example.com/")).rejects.toThrow("网址里不能带账号密码");
     await expect(fetchWebPage("not a url")).rejects.toThrow("不是合法的网址");
-    await expect(fetchWebPage("http://127.0.0.1:1/")).rejects.toThrow("Cannot access local or intranet address");
-    await expect(fetchWebPage("http://[::1]:1/")).rejects.toThrow("Cannot access local or intranet address");
+    await expect(fetchWebPage("http://127.0.0.1:1/")).rejects.toThrow("不能访问本机或内网地址");
+    await expect(fetchWebPage("http://[::1]:1/")).rejects.toThrow("不能访问本机或内网地址");
   });
 
   it("域名解析到本机时在连接前拒绝", async () => {
     const base = await serve((_req, res) => res.end("should not be reached"));
     const port = new URL(base).port;
-    await expect(fetchWebPage(`http://localhost:${port}/`)).rejects.toThrow("Cannot access localhost or internal network address");
+    await expect(fetchWebPage(`http://localhost:${port}/`)).rejects.toThrow("不能访问本机或内网地址");
   });
 
   it("读取网页正文并解压 gzip", async () => {

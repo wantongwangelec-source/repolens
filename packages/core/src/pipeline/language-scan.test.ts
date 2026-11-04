@@ -67,9 +67,7 @@ describe("多语言扫描", () => {
     roots.push(root);
     mkdirSync(join(root, "src"));
     writeFileSync(join(root, ".repolens.json"), JSON.stringify({ llm: { enabled: false } }));
-    writeFileSync(join(root, "src/greet.ts"), "// Greetings
-function greet() { return 1 }
-
+    writeFileSync(join(root, "src/greet.ts"), "// 问候语\nfunction greet() { return 1 }\n");
     writeFileSync(join(root, "src/Greet.vue"), [
       "<template><p>你好，世界</p></template>",
       "<script>",

@@ -186,14 +186,8 @@ describe("generateSymbolSemantics", () => {
     const repo = tempDir("repolens-symbol-repo-");
     const configHome = tempDir("repolens-symbol-config-");
     mkdirSync(join(repo, "src"));
-    // Chinese causes tree-sitter's string indices to misalign with UTF-8 bytes, slicing by byte will retrieve the wrong source code
-    const source = "// Header comment
-
-export function run(input) {
-  if (!input) return null;
-  return input.trim();
-}
-
+    // 中文让 tree-sitter 的字符串下标与 UTF-8 字节错开，按字节切片会取错源码
+    const source = "// 头部注释\n\nexport function run(input) {\n  if (!input) return null;\n  return input.trim();\n}\n";
     writeFileSync(join(repo, "src/run.ts"), source);
     mkdirSync(join(configHome, "repolens"));
     writeFileSync(join(configHome, "repolens/config.json"), JSON.stringify({
