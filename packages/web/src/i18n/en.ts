@@ -411,7 +411,7 @@ export const EN: Record<string, Translation> = {
   "AI 设置": "AI settings",
   "关闭": "Close",
   "正在读取设置…": "Loading settings…",
-  "兼容 OpenAI Chat Completions 接口的服务都可以用：OpenAI、DeepSeek、各类模型网关，或者本机的 Ollama（http://localhost:11434/v1, no key required).
+  "兼容 OpenAI Chat Completions 接口的服务都可以用：OpenAI、DeepSeek、各类模型网关，或者本机的 Ollama（http://localhost:11434/v1，无需密钥）。":
     "Any service compatible with the OpenAI Chat Completions API works: OpenAI, DeepSeek, model gateways, or a local Ollama (http://localhost:11434/v1, no key needed).",
   "服务地址": "Service URL",
   "模型": "Model",

@@ -103,7 +103,7 @@ function SettingsForm({ bridge, onClose }: { bridge: DesktopBridge; onClose: () 
         ) : (
           <div className="flex flex-col gap-3.5 p-4">
             <p className="text-[11px] leading-relaxed text-[var(--color-ink-faint)]">
-              {t("兼容 OpenAI Chat Completions 接口的服务都可以用：OpenAI、DeepSeek、各类模型网关，或者本机的 Ollama（http://localhost:11434/v1, no key required).
+              {t("兼容 OpenAI Chat Completions 接口的服务都可以用：OpenAI、DeepSeek、各类模型网关，或者本机的 Ollama（http://localhost:11434/v1，无需密钥）。")}
             </p>
 
             <Field label={t("服务地址")}>
