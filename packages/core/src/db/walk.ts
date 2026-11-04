@@ -63,9 +63,7 @@ export function getEntryPoints(db: Db): EntryPointDto[] {
 /**
  * A single-step read of a frame. Call by (starting line of expression, ending byte) row: when crossing lines, it is the reading order of the source code from top to bottom,
  * In the same line, the actual argument finishes before the outer call, so `openDb(indexPath(root))` calls indexPath first.
- * For chained calls across lines, the entire chain is counted as starting from the first line. `a
-.b()
-.c()` corresponds to b and c in order.
+ * For chained calls across lines, the entire chain is counted as starting from the first line; `a\n.b()\n.c()` corresponds to b and c in order.
  */
 export function getWalkFrame(db: Db, symbolId: number): WalkFrameDto | null {
   const symbol = db.prepare(

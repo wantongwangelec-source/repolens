@@ -483,8 +483,7 @@ function normalizeRawText(value: string): string {
   let text = decodeHtmlEntities(value).replace(/\r\n?/g, "\n");
   // Some compatible interfaces will escape JSON strings a second time, eventually leaving visible backslash+n.
   // Only restore when the entire paragraph has no real line breaks, or when there are multiple escaped line breaks, to avoid mistakenly affecting pseudo code.
-  // Used to illustrate the single `
-` in a string literal.
+  // that illustrates a single `\n` in a string literal.
   const escapedBreaks = text.match(/\\r\\n|\\n|\\r/g)?.length ?? 0;
   if (escapedBreaks > 0 && (!text.includes("\n") || escapedBreaks > 1)) {
     text = text
