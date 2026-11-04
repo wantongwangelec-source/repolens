@@ -14,7 +14,7 @@ nodeGypRebuild: false
 artifactName: ${productName}-${version}-${os}-${arch}.${ext}
 publish:
   provider: github
-  owner: xtongs
+  owner: wantongwangelec-source
   repo: repolens
   # Upload the tasks from all three platforms into the same draft, and click publish manually after everything is completed.
   releaseType: draft
@@ -51,7 +51,7 @@ linux:
   category: Development
   executableName: repolens
   synopsis: 本地代码仓库理解工具
-  maintainer: Tong <xtongs@gmail.com>
+  maintainer: Tong <wantongwang.elec@gmail.com>
   target:
     - target: AppImage
       arch: [x64, arm64]

@@ -9,7 +9,7 @@ const MAX_REDIRECTS = 5;
 /** The maximum number of bytes after decompression; a zip bomb can only be read up to this point */
 const MAX_BYTES = 2 * 1024 * 1024;
 const TIMEOUT_MS = 15_000;
-const USER_AGENT = "Mozilla/5.0 (compatible; RepoLens; +https://github.com/xtongs/repolens)";
+const USER_AGENT = "Mozilla/5.0 (compatible; RepoLens; +https://github.com/wantongwangelec-source/repolens)";
 const TEXTUAL = /^text\/|json|xml|javascript|ecmascript|yaml|toml|markdown/i;
 
 export class WebFetchError extends Error {}

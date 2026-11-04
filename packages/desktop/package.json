@@ -7,9 +7,9 @@
   "description": "RepoLens 桌面客户端",
   "author": {
     "name": "Tong",
-    "email": "xtongs@gmail.com"
+    "email": "wantongwang.elec@gmail.com"
   },
-  "homepage": "https://github.com/xtongs/repolens",
+  "homepage": "https://github.com/wantongwangelec-source/repolens",
   "scripts": {
     "build": "node scripts/build.mjs",
     "typecheck": "tsc --noEmit -p tsconfig.json",

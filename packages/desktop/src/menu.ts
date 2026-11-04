@@ -1,7 +1,7 @@
 import { app, Menu, shell, type MenuItemConstructorOptions } from "electron";
 import { tr } from "./locale.js";
 
-export const HOMEPAGE = "https://github.com/xtongs/repolens";
+export const HOMEPAGE = "https://github.com/wantongwangelec-source/repolens";
 
 export interface MenuActions {
   addRepository: () => void;
